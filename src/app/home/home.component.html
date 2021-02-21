@@ -1,0 +1,186 @@
+<a routerLink="/todolist"><button class="btn btn-success pull-right"> TO-Do List</button></a>
+<a routerLink="/posts"><button class="btn btn-success pull-right"> POSTS</button></a>
+<button type='button' (click)="create()">Create</button>
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th>Website</th>
+                <th>Company</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let users of userData">
+                <td>{{users.id}}</td>
+                <td>{{ users.name }}</td>
+                <td>{{ users.username }}</td>
+                <td>{{ users.email }}</td>
+                <td>{{ users.address }}</td>
+                <td>{{ users.phone }}</td>
+                <td>{{ users.website }}</td>
+                <td>{{ users.company.name }}</td>
+                <td><button type='button' (click)="edit(users)">Edit</button></td>
+                <td><button type='button' (click)="delete(users)">Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="redirection-popup" *ngIf="overlayFlag">
+        <h3 *ngIf="!header">EDIT USERS</h3>
+        <h3 *ngIf="header">CREATE USERS</h3>
+        <div class="redirection-content">
+            <form [formGroup]="userform" (ngSubmit)="$event.preventDefault()">
+                <div class="form-group CustomValidators col-md-6">
+                    <label class="label-text">Name</label>
+                    <input appSpecialCharacter type="text" formControlName="fullName" id="fullName" name="fullName"
+                        required maxlength="254"
+                        class="form-control {{formControls.fullName.touched && formControls.fullName.invalid ? 'error-border' : ''}}">
+                    <div *ngIf="formControls.fullName.touched && formControls.fullName.invalid" class="error">
+                        <span *ngIf="formControls.fullName.errors.required" class="error-msg">This field cannot be
+                            blank</span>
+                    </div>
+                </div>
+                <div class="form-group CustomValidators col-md-6">
+                    <label class="label-text">Username</label>
+                    <input type="text" maxlength="50" formControlName="Username" name="Username" id="Username" required
+                        class="form-control {{formControls.Username.touched && formControls.Username.invalid ? 'error-border' : ''}}">
+                    <div *ngIf="formControls.Username.touched && formControls.Username.invalid" class="error">
+                        <span *ngIf="formControls.Username.errors.required" class="error-msg">This field
+                            cannot be blank</span>
+                    </div>
+                </div>
+                <div class="form-group CustomValidators col-md-6">
+                    <label class="label-text">Email ID</label>
+                    <input type="email" maxlength="50" formControlName="email" name="email" id="email" required
+                        class="form-control {{formControls.email.touched && formControls.email.invalid ? 'error-border' : ''}}">
+                    <div *ngIf="formControls.email.touched && formControls.email.invalid" class="error">
+                        <span *ngIf="formControls.email.errors.required" class="error-msg">This field cannot be
+                            blank</span>
+                    </div>
+                </div>
+                <label class="label-text">Address</label>
+                <div class="form-group CustomValidators col-md-6">
+                    <label class="label-text">Street</label>
+                    <input type="text" maxlength="50" formControlName="street" name="street" id="street" required
+                        class="form-control {{formControls.street.touched && formControls.street.invalid ? 'error-border' : ''}}">
+                    <div *ngIf="formControls.street.touched && formControls.street.invalid" class="error">
+                        <span *ngIf="formControls.street.errors.required" class="error-msg">This field
+                            cannot be blank</span>
+                    </div>
+                </div>
+                <div class="form-group CustomValidators col-md-6">
+                    <label class="label-text">Suite</label>
+                    <input type="text" maxlength="50" formControlName="suite" name="suite" id="suite" required
+                        class="form-control {{formControls.suite.touched && formControls.suite.invalid ? 'error-border' : ''}}">
+                    <div *ngIf="formControls.suite.touched && formControls.suite.invalid" class="error">
+                        <span *ngIf="formControls.suite.errors.required" class="error-msg">This field
+                            cannot be blank</span>
+                    </div>
+                </div>
+                <div class="form-group CustomValidators col-md-6">
+                    <label class="label-text">City</label>
+                    <input type="text" maxlength="50" formControlName="city" name="city" id="city" required
+                        class="form-control {{formControls.city.touched && formControls.city.invalid ? 'error-border' : ''}}">
+                    <div *ngIf="formControls.city.touched && formControls.city.invalid" class="error">
+                        <span *ngIf="formControls.city.errors.required" class="error-msg">This field
+                            cannot be blank</span>
+                    </div>
+                </div>
+                <div class="form-group CustomValidators col-md-6">
+                    <label class="label-text">Zipcode</label>
+                    <input appNumbersOnly type="tel" maxlength="10" formControlName="zipcode" id="zipcode" required
+                        name="zipcode"
+                        class="form-control {{formControls.zipcode.touched && formControls.zipcode.invalid ? 'error-border' : ''}}">
+                    <div *ngIf="formControls.zipcode.touched && formControls.zipcode.invalid" class="error">
+                        <span *ngIf="formControls.zipcode.errors.required" class="error-msg">This field cannot be
+                            blank</span>
+                        <span *ngIf="formControls.zipcode.errors.pattern" class="error-msg">Please enter a valid
+                            zipcode</span>
+                    </div>
+                </div>
+                <label class="label-text">Geo Location</label>
+                <div class="form-group CustomValidators col-md-6">
+                    <label class="label-text">lat</label>
+                    <input appNumbersOnly type="tel" maxlength="10" formControlName="lat" id="lat" name="lat" required
+                        class="form-control {{formControls.lat.touched && formControls.lat.invalid ? 'error-border' : ''}}">
+                    <div *ngIf="formControls.lat.touched && formControls.lat.invalid" class="error">
+                        <span *ngIf="formControls.lat.errors.required" class="error-msg">This field cannot be
+                            blank</span>
+                        <span *ngIf="formControls.lat.errors.pattern" class="error-msg">Please enter a valid
+                            latitude</span>
+                    </div>
+                </div>
+                <div class="form-group CustomValidators col-md-6">
+                    <label class="label-text">lng</label>
+                    <input appNumbersOnly type="tel" maxlength="10" formControlName="lng" id="lng" name="lng" required
+                        class="form-control {{formControls.lng.touched && formControls.lng.invalid ? 'error-border' : ''}}">
+                    <div *ngIf="formControls.lng.touched && formControls.lng.invalid" class="error">
+                        <span *ngIf="formControls.lng.errors.required" class="error-msg">This field cannot be
+                            blank</span>
+                        <span *ngIf="formControls.lng.errors.pattern" class="error-msg">Please enter a lng
+                            longitude</span>
+                    </div>
+                </div>
+                <div class="form-group CustomValidators col-md-6">
+                    <label class="label-text">Phone</label>
+                    <input appNumbersOnly type="tel" formControlName="mobile" id="mobile" name="mobile" required
+                        class="form-control {{formControls.mobile.touched && formControls.mobile.invalid ? 'error-border' : ''}}">
+                    <div *ngIf="formControls.mobile.touched && formControls.mobile.invalid" class="error">
+                        <span *ngIf="formControls.mobile.errors.required" class="error-msg">This field cannot be
+                            blank</span>
+                        <span *ngIf="formControls.mobile.errors.pattern" class="error-msg">Please enter a valid
+                            mobile
+                            no.</span>
+                    </div>
+                </div>
+                <div class="form-group CustomValidators col-md-6">
+                    <label class="label-text">Website</label>
+                    <input type="text" maxlength="50" formControlName="Website" name="Website" id="Website" required
+                        class="form-control {{formControls.Website.touched && formControls.Website.invalid ? 'error-border' : ''}}">
+                    <div *ngIf="formControls.Website.touched && formControls.Website.invalid" class="error">
+                        <span *ngIf="formControls.Website.errors.required" class="error-msg">This field
+                            cannot be blank</span>
+                    </div>
+                </div>
+                <label class="label-text">Company</label>
+                <div class="form-group CustomValidators col-md-6">
+                    <label class="label-text">Name</label>
+                    <input type="text" maxlength="50" formControlName="compName" name="compName" id="compName" required
+                        class="form-control {{formControls.compName.touched && formControls.compName.invalid ? 'error-border' : ''}}">
+                    <div *ngIf="formControls.compName.touched && formControls.compName.invalid" class="error">
+                        <span *ngIf="formControls.compName.errors.required" class="error-msg">This field
+                            cannot be blank</span>
+                    </div>
+                </div>
+                <div class="form-group CustomValidators col-md-6">
+                    <label class="label-text">Catch Phrase</label>
+                    <input type="text" maxlength="50" formControlName="catchPhrase" name="catchPhrase" id="catchPhrase"
+                        required
+                        class="form-control {{formControls.catchPhrase.touched && formControls.catchPhrase.invalid ? 'error-border' : ''}}">
+                    <div *ngIf="formControls.catchPhrase.touched && formControls.catchPhrase.invalid" class="error">
+                        <span *ngIf="formControls.catchPhrase.errors.required" class="error-msg">This field
+                            cannot be blank</span>
+                    </div>
+                </div>
+                <div class="form-group CustomValidators col-md-6">
+                    <label class="label-text">bs</label>
+                    <input type="text" maxlength="50" formControlName="bs" name="bs" id="bs" required
+                        class="form-control {{formControls.bs.touched && formControls.bs.invalid ? 'error-border' : ''}}">
+                    <div *ngIf="formControls.bs.touched && formControls.bs.invalid" class="error">
+                        <span *ngIf="formControls.bs.errors.required" class="error-msg">This field
+                            cannot be blank</span>
+                    </div>
+                </div>
+                <button (click)="save(formControls)" class="default-btn">SAVE</button>
+                <button (click)="cancel()" class="default-btn">CANCEL</button>
+            </form>
+        </div>
+    </div>
+</div>

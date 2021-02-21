@@ -1,0 +1,66 @@
+<a routerLink="/todolist"><button class="btn btn-success pull-right"> TO-Do List</button></a>
+<a routerLink="/"><button class="btn btn-success pull-right"> USERS</button></a>
+<button type='button' (click)="create()">Create</button>
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>User Id</th>
+                <th>Title</th>
+                <th>Body</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let post of posts">
+                <td>{{post.id}}</td>
+                <td>{{ post.userId }}</td>
+                <td>{{ post.title }}</td>
+                <td>{{ post.body }}</td>
+                <td><button type='button' (click)="edit(post)">Edit</button></td>
+                <td><button type='button' (click)="delete(post)">Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="redirection-popup" *ngIf="overlayFlag">
+        <h3 *ngIf="!header">EDIT POSTS</h3>
+        <h3 *ngIf="header">CREATE POSTS</h3>
+        <div class="redirection-content">
+            <form [formGroup]="postsForm" (ngSubmit)="$event.preventDefault()">
+                <div class="form-group CustomValidators col-md-6">
+                    <label class="label-text">Title</label>
+                    <input appSpecialCharacter type="text" formControlName="title" id="title" name="title"
+                        maxlength="254" required
+                        class="form-control {{formControls.title.touched && formControls.title.invalid ? 'error-border' : ''}}">
+                    <div *ngIf="formControls.title.touched && formControls.title.invalid" class="error">
+                        <span *ngIf="formControls.title.errors.required" class="error-msg">This field cannot be
+                            blank</span>
+                    </div>
+                </div>
+                <div class="form-group CustomValidators col-md-6">
+                    <label class="label-text">Body</label>
+                    <input type="text" formControlName="body" name="body" id="body" required
+                        class="form-control {{formControls.body.touched && formControls.body.invalid ? 'error-border' : ''}}">
+                    <div *ngIf="formControls.body.touched && formControls.body.invalid" class="error">
+                        <span *ngIf="formControls.body.errors.required" class="error-msg">This field
+                            cannot be blank</span>
+                    </div>
+                </div>
+                <div class="form-group CustomValidators col-md-6">
+                    <label class="label-text">User Id</label>
+                    <select formControlName="userId">
+                        <option *ngFor="let id of userId" [value]="id">{{id}}</option>
+                    </select>
+                    <div *ngIf="formControls.userId.touched && formControls.userId.invalid" class="error">
+                        <span *ngIf="formControls.userId.errors.required" class="error-msg">This field
+                            cannot be blank</span>
+                    </div>
+                </div>
+                <button (click)="save(formControls)" class="default-btn">SAVE</button>
+                <button (click)="cancel()" class="default-btn">CANCEL</button>
+            </form>
+        </div>
+    </div>
+</div>
