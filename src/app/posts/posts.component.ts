@@ -4,6 +4,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { throwError } from 'rxjs';
 import * as globals from '../globals';
+import {DataSource} from '@angular/cdk/collections';
+import { MatTableDataSource } from '@angular/material/table';
+export interface PostElement {
+  id: number;
+  userId: number;
+  title: string;
+  body: string;
+}
 
 @Component({
   selector: 'app-posts',
@@ -11,7 +19,27 @@ import * as globals from '../globals';
   styleUrls: ['./posts.component.css']
 })
 export class PostsComponent implements OnInit {
+  dataSource: MatTableDataSource<PostElement> ;
   public posts: any = [];
+  displayedColumns = [];
+  columnNames = [{
+    id: 'id',
+    value: 'S.No',
+
+  },
+  {
+    id: 'userId',
+    value: 'USER ID',
+  },
+  {
+    id: 'title',
+    value: 'Title',
+  },
+  {
+    id: 'body',
+    value: 'Body',
+  }];
+
   public postsForm: FormGroup;
   public formControls: any;
   public overlayFlag: any = false;
@@ -28,6 +56,9 @@ export class PostsComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
+    this.displayedColumns = this.columnNames.map(x => x.id);
+    this.displayedColumns.push("edit");
+    this.displayedColumns.push("delete");
     this.postData();
     this.getDataFromService.getUsers().then((data) => {
       data.forEach(element => {
@@ -39,6 +70,7 @@ export class PostsComponent implements OnInit {
     this.getDataFromService.getPosts().then((data) => {
       if (data) {
         this.posts = data;
+        this.dataSource = new MatTableDataSource<PostElement>(this.posts);
       }
     }).catch(error => {
       return throwError(error);
@@ -83,6 +115,7 @@ export class PostsComponent implements OnInit {
         this.getDataFromService.addposts(request).then((data) => {
           if (data) {
             this.posts.push(data);
+            this.dataSource = new MatTableDataSource<PostElement>(this.posts);
           }
         }).catch(error => {
           return throwError(error);
@@ -99,6 +132,7 @@ export class PostsComponent implements OnInit {
                 element.body = data.body;
               }
             });
+            this.dataSource = new MatTableDataSource<PostElement>(this.posts);
           }
         }).catch(error => {
           return throwError(error);
@@ -113,6 +147,7 @@ export class PostsComponent implements OnInit {
     this.getDataFromService.deletePosts(post.id)
       .then(response => {
         this.posts = this.posts.filter(item => item.id !== post.id);
+        this.dataSource = new MatTableDataSource<PostElement>(this.posts);
       });
   }
   public cancel() {

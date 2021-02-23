@@ -4,6 +4,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { throwError, empty } from 'rxjs';
 import * as globals from '../globals';
+import { DataSource } from '@angular/cdk/collections';
+import { MatTableDataSource } from '@angular/material/table';
+export interface UserElement {
+  Name: string;
+  Username: string;
+  Email: string,
+  Address: string;
+  Phone: string;
+  Website: string,
+  Company: string;
+}
 
 @Component({
   selector: 'app-home',
@@ -11,12 +22,50 @@ import * as globals from '../globals';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+  dataSource: MatTableDataSource<UserElement>;
   public userData: any = [];
+  displayedColumns = [];
+  columnNames = [{
+    id: 'id',
+    value: 'S.No',
+
+  },
+  {
+    id: 'name',
+    value: 'Name',
+  },
+  {
+    id: 'username',
+    value: 'Username',
+  },
+  {
+    id: 'email',
+    value: 'Email',
+  },
+  {
+    id: 'address',
+    value: 'Address',
+
+  },
+  {
+    id: 'phone',
+    value: 'Phone',
+  },
+  {
+    id: 'website',
+    value: 'Website',
+  },
+  {
+    id: 'company',
+    value: 'Company'
+  }
+  ];
+
   public userform: FormGroup;
   public formControls: any;
   public overlayFlag: any = false;
   public header: any;
-  public submitted : any = false;
+  public submitted: any = false;
 
   constructor(
     private getDataFromService: GetDataService,
@@ -27,6 +76,9 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
+    this.displayedColumns = this.columnNames.map(x => x.id);
+    this.displayedColumns.push("edit");
+    this.displayedColumns.push("delete");
     this.user();
   }
   /**
@@ -61,8 +113,11 @@ export class HomeComponent implements OnInit {
           element.address.geo =
             Object.keys(element.address.geo).map(function (k) { return element.address.geo[k] });
           element.address =
-            Object.keys(element.address).map(function (k) { return element.address[k] })
+            Object.keys(element.address).map(function (k) { return element.address[k] });
+            element.company =
+            Object.keys(element.company).map(function (k) { return element.company[k] });
         });
+        this.dataSource = new MatTableDataSource<UserElement>(this.userData);
       }
     }).catch(error => {
       return throwError(error);
@@ -86,9 +141,9 @@ export class HomeComponent implements OnInit {
         lng: users.address[4][1],
         mobile: users.phone,
         Website: users.website,
-        compName: users.company.name,
-        catchPhrase: users.company.catchPhrase,
-        bs: users.company.bs,
+        compName: users.company[0],
+        catchPhrase: users.company[1],
+        bs: users.company[2],
       });
     }
   }
@@ -128,9 +183,12 @@ export class HomeComponent implements OnInit {
                 element.address.geo =
                   Object.keys(element.address.geo).map(function (k) { return element.address.geo[k] });
                 element.address =
-                  Object.keys(element.address).map(function (k) { return element.address[k] })
+                  Object.keys(element.address).map(function (k) { return element.address[k] });
+                  element.company =
+                  Object.keys(element.company).map(function (k) { return element.company[k] });
               }
             });
+            this.dataSource = new MatTableDataSource<UserElement>(this.userData);
           }
         }).catch(error => {
           return throwError(error);
@@ -161,9 +219,12 @@ export class HomeComponent implements OnInit {
                 element.address.geo =
                   Object.keys(element.address.geo).map(function (k) { return element.address.geo[k] });
                 element.address =
-                  Object.keys(element.address).map(function (k) { return element.address[k] })
+                  Object.keys(element.address).map(function (k) { return element.address[k] });
+                  element.company =
+                  Object.keys(element.company).map(function (k) { return element.company[k] });
               }
             });
+            this.dataSource = new MatTableDataSource<UserElement>(this.userData);
           }
         }).catch(error => {
           return throwError(error);
@@ -177,6 +238,7 @@ export class HomeComponent implements OnInit {
     this.getDataFromService.deleteUsers(users.id)
       .then(response => {
         this.userData = this.userData.filter(item => item.id !== users.id);
+        this.dataSource = new MatTableDataSource<UserElement>(this.userData);
       });
 
   }

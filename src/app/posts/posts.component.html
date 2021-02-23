@@ -2,28 +2,26 @@
 <a routerLink="/"><button class="btn btn-success pull-right"> USERS</button></a>
 <button type='button' (click)="create()">Create</button>
 <div class="container">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>S.No</th>
-                <th>User Id</th>
-                <th>Title</th>
-                <th>Body</th>
-                <th>Edit</th>
-                <th>Delete</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let post of posts">
-                <td>{{post.id}}</td>
-                <td>{{ post.userId }}</td>
-                <td>{{ post.title }}</td>
-                <td>{{ post.body }}</td>
-                <td><button type='button' (click)="edit(post)">Edit</button></td>
-                <td><button type='button' (click)="delete(post)">Delete</button></td>
-            </tr>
-        </tbody>
-    </table>
+    <mat-table #table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{column.value}}</mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element[column.id]}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="edit">
+            <mat-header-cell  *matHeaderCellDef > EDIT </mat-header-cell>
+            <mat-cell *matCellDef="let row" >
+                 <button (click)="edit(row)" mat-button >EDIT</button>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="delete">
+            <mat-header-cell  *matHeaderCellDef > DELETE </mat-header-cell>
+            <mat-cell *matCellDef="let row" >
+                 <button (click)="delete(row)" mat-button >DELETE</button>
+            </mat-cell>
+          </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
     <div class="redirection-popup" *ngIf="overlayFlag">
         <h3 *ngIf="!header">EDIT POSTS</h3>
         <h3 *ngIf="header">CREATE POSTS</h3>

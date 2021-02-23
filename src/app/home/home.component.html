@@ -2,36 +2,26 @@
 <a routerLink="/posts"><button class="btn btn-success pull-right"> POSTS</button></a>
 <button type='button' (click)="create()">Create</button>
 <div class="container">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>S.No</th>
-                <th>Name</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Address</th>
-                <th>Phone</th>
-                <th>Website</th>
-                <th>Company</th>
-                <th>Edit</th>
-                <th>Delete</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let users of userData">
-                <td>{{users.id}}</td>
-                <td>{{ users.name }}</td>
-                <td>{{ users.username }}</td>
-                <td>{{ users.email }}</td>
-                <td>{{ users.address }}</td>
-                <td>{{ users.phone }}</td>
-                <td>{{ users.website }}</td>
-                <td>{{ users.company.name }}</td>
-                <td><button type='button' (click)="edit(users)">Edit</button></td>
-                <td><button type='button' (click)="delete(users)">Delete</button></td>
-            </tr>
-        </tbody>
-    </table>
+    <mat-table #table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{column.value}}</mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element[column.id]}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="edit">
+            <mat-header-cell  *matHeaderCellDef > EDIT </mat-header-cell>
+            <mat-cell *matCellDef="let row" >
+                 <button (click)="edit(row)" mat-button >EDIT</button>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="delete">
+            <mat-header-cell  *matHeaderCellDef > DELETE </mat-header-cell>
+            <mat-cell *matCellDef="let row" >
+                 <button (click)="delete(row)" mat-button >DELETE</button>
+            </mat-cell>
+          </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
     <div class="redirection-popup" *ngIf="overlayFlag">
         <h3 *ngIf="!header">EDIT USERS</h3>
         <h3 *ngIf="header">CREATE USERS</h3>
@@ -45,14 +35,14 @@
                             class="form-control {{formControls.fullName.touched && formControls.fullName.invalid ? 'error-border' : ''}}">
                         <div *ngIf="submitted || formControls.fullName.dirty && formControls.fullName.invalid"
                             class="error">
-                            <span *ngIf="formControls.fullName.errors.required" class="error-msg">This field cannot be
+                            <span *ngIf="formControls.fullName.errors?.required" class="error-msg">This field cannot be
                                 blank</span>
-                            <span *ngIf="formControls.fullName.errors.pattern && !formControls.fullName.errors.required"
-                                [hidden]="formControls.fullName.errors.minlength || formControls.fullName.errors.maxlength"
+                            <span *ngIf="formControls.fullName.errors?.pattern && !formControls.fullName.errors?.required"
+                                [hidden]="formControls.fullName.errors?.minlength || formControls.fullName.errors?.maxlength"
                                 class="error-msg">Doesn’t look like a name</span>
-                            <span *ngIf="formControls.fullName.errors.minlength" class="error-msg">Please enter at least
+                            <span *ngIf="formControls.fullName.errors?.minlength" class="error-msg">Please enter at least
                                 2 characters</span>
-                            <span *ngIf="formControls.fullName.errors.maxlength" class="error-msg">Name cannot be
+                            <span *ngIf="formControls.fullName.errors?.maxlength" class="error-msg">Name cannot be
                                 greater than
                                 150 characters</span>
                         </div>
@@ -64,14 +54,14 @@
                             class="form-control {{formControls.Username.touched && formControls.Username.invalid ? 'error-border' : ''}}">
                         <div *ngIf="submitted || formControls.Username.dirty && formControls.Username.invalid"
                             class="error">
-                            <span *ngIf="formControls.Username.errors.required" class="error-msg">This field
+                            <span *ngIf="formControls.Username.errors?.required" class="error-msg">This field
                                 cannot be blank</span>
-                            <span *ngIf="formControls.Username.errors.minlength" class="error-msg">Please enter at least
+                            <span *ngIf="formControls.Username.errors?.minlength" class="error-msg">Please enter at least
                                 2 characters</span>
-                            <span *ngIf="formControls.Username.errors.maxlength" class="error-msg">Username cannot be
+                            <span *ngIf="formControls.Username.errors?.maxlength" class="error-msg">Username cannot be
                                 greater than
                                 50 characters</span>
-                            <span *ngIf="formControls.Username.errors.pattern" class="error-msg">Please enter a valid
+                            <span *ngIf="formControls.Username.errors?.pattern" class="error-msg">Please enter a valid
                                 Username</span>
                         </div>
                     </div>
@@ -81,9 +71,9 @@
                             class="form-control {{formControls.email.touched && formControls.email.invalid ? 'error-border' : ''}}">
                         <div *ngIf="submitted || formControls.email.touched && formControls.email.invalid"
                             class="error">
-                            <span *ngIf="formControls.email.errors.required" class="error-msg">This field cannot be
+                            <span *ngIf="formControls.email.errors?.required" class="error-msg">This field cannot be
                                 blank</span>
-                            <span *ngIf="formControls.email.errors.pattern" class="error-msg">Please enter a valid Email
+                            <span *ngIf="formControls.email.errors?.pattern" class="error-msg">Please enter a valid Email
                                 ID</span>
                         </div>
                     </div>
@@ -96,9 +86,9 @@
                             class="form-control {{formControls.street.touched && formControls.street.invalid ? 'error-border' : ''}}">
                         <div *ngIf="submitted || formControls.street.touched && formControls.street.invalid"
                             class="error">
-                            <span *ngIf="formControls.street.errors.required" class="error-msg">This field
+                            <span *ngIf="formControls.street.errors?.required" class="error-msg">This field
                                 cannot be blank</span>
-                            <span *ngIf="formControls.street.errors.pattern" class="error-msg">Please enter a valid
+                            <span *ngIf="formControls.street.errors?.pattern" class="error-msg">Please enter a valid
                                 Street</span>
                         </div>
                     </div>
@@ -108,9 +98,9 @@
                             class="form-control {{formControls.suite.touched && formControls.suite.invalid ? 'error-border' : ''}}">
                         <div *ngIf="submitted || formControls.suite.touched && formControls.suite.invalid"
                             class="error">
-                            <span *ngIf="formControls.suite.errors.required" class="error-msg">This field
+                            <span *ngIf="formControls.suite.errors?.required" class="error-msg">This field
                                 cannot be blank</span>
-                            <span *ngIf="formControls.suite.errors.pattern" class="error-msg">Please enter a valid
+                            <span *ngIf="formControls.suite.errors?.pattern" class="error-msg">Please enter a valid
                                 Suite</span>
                         </div>
                     </div>
@@ -119,7 +109,7 @@
                         <input type="text" maxlength="50" formControlName="city" name="city" id="city" required
                             class="form-control {{formControls.city.touched && formControls.city.invalid ? 'error-border' : ''}}">
                         <div *ngIf="submitted || formControls.city.touched && formControls.city.invalid" class="error">
-                            <span *ngIf="formControls.city.errors.required" class="error-msg">This field
+                            <span *ngIf="formControls.city.errors?.required" class="error-msg">This field
                                 cannot be blank</span>
                         </div>
                     </div>
@@ -130,9 +120,9 @@
                             class="form-control {{formControls.zipcode.touched && formControls.zipcode.invalid ? 'error-border' : ''}}">
                         <div *ngIf="submitted || formControls.zipcode.touched && formControls.zipcode.invalid"
                             class="error">
-                            <span *ngIf="formControls.zipcode.errors.required" class="error-msg">This field cannot be
+                            <span *ngIf="formControls.zipcode.errors?.required" class="error-msg">This field cannot be
                                 blank</span>
-                            <span *ngIf="formControls.zipcode.errors.pattern" class="error-msg">Please enter a valid
+                            <span *ngIf="formControls.zipcode.errors?.pattern" class="error-msg">Please enter a valid
                                 zipcode</span>
                         </div>
                     </div>
@@ -145,9 +135,9 @@
                             required
                             class="form-control {{formControls.lat.touched && formControls.lat.invalid ? 'error-border' : ''}}">
                         <div *ngIf="submitted || formControls.lat.touched && formControls.lat.invalid" class="error">
-                            <span *ngIf="formControls.lat.errors.required" class="error-msg">This field cannot be
+                            <span *ngIf="formControls.lat.errors?.required" class="error-msg">This field cannot be
                                 blank</span>
-                            <span *ngIf="formControls.lat.errors.pattern" class="error-msg">Please enter a valid
+                            <span *ngIf="formControls.lat.errors?.pattern" class="error-msg">Please enter a valid
                                 latitude</span>
                         </div>
                     </div>
@@ -157,9 +147,9 @@
                             required
                             class="form-control {{formControls.lng.touched && formControls.lng.invalid ? 'error-border' : ''}}">
                         <div *ngIf="submitted || formControls.lng.touched && formControls.lng.invalid" class="error">
-                            <span *ngIf="formControls.lng.errors.required" class="error-msg">This field cannot be
+                            <span *ngIf="formControls.lng.errors?.required" class="error-msg">This field cannot be
                                 blank</span>
-                            <span *ngIf="formControls.lng.errors.pattern" class="error-msg">Please enter a lng
+                            <span *ngIf="formControls.lng.errors?.pattern" class="error-msg">Please enter a lng
                                 longitude</span>
                         </div>
                     </div>
@@ -171,9 +161,9 @@
                             class="form-control {{formControls.mobile.touched && formControls.mobile.invalid ? 'error-border' : ''}}">
                         <div *ngIf="submitted || formControls.mobile.touched && formControls.mobile.invalid"
                             class="error">
-                            <span *ngIf="formControls.mobile.errors.required" class="error-msg">This field cannot be
+                            <span *ngIf="formControls.mobile.errors?.required" class="error-msg">This field cannot be
                                 blank</span>
-                            <span *ngIf="formControls.mobile.errors.pattern" class="error-msg">Please enter a valid
+                            <span *ngIf="formControls.mobile.errors?.pattern" class="error-msg">Please enter a valid
                                 mobile
                                 no.</span>
                         </div>
@@ -184,9 +174,9 @@
                             class="form-control {{ formControls.Website.touched && formControls.Website.invalid ? 'error-border' : ''}}">
                         <div *ngIf="submitted || formControls.Website.touched && formControls.Website.invalid"
                             class="error">
-                            <span *ngIf="formControls.Website.errors.required" class="error-msg">This field
+                            <span *ngIf="formControls.Website.errors?.required" class="error-msg">This field
                                 cannot be blank</span>
-                            <span *ngIf="formControls.Website.errors.pattern" class="error-msg">Please enter a valid
+                            <span *ngIf="formControls.Website.errors?.pattern" class="error-msg">Please enter a valid
                                 Website Name</span>
                         </div>
                     </div>
@@ -200,13 +190,13 @@
                             class="form-control {{ formControls.compName.touched && formControls.compName.invalid ? 'error-border' : ''}}">
                         <div *ngIf="submitted || formControls.compName.touched && formControls.compName.invalid"
                             class="error">
-                            <span *ngIf="formControls.compName.errors.required" class="error-msg">This field
+                            <span *ngIf="formControls.compName.errors?.required" class="error-msg">This field
                                 cannot be blank</span>
-                            <span *ngIf="formControls.compName.errors.pattern" class="error-msg">Invalid field</span>
-                            <span *ngIf="formControls.compName.errors.maxlength" class="error-msg">Company Name cannot
+                            <span *ngIf="formControls.compName.errors?.pattern" class="error-msg">Invalid field</span>
+                            <span *ngIf="formControls.compName.errors?.maxlength" class="error-msg">Company Name cannot
                                 be greater than 70 characters</span>
                             <span
-                                *ngIf="!formControls.compName.errors.required && !formControls.compName.errors.pattern && !formControls.compName.errors.maxlength && formControls.compName.errors.minlength"
+                                *ngIf="!formControls.compName.errors?.required && !formControls.compName.errors?.pattern && !formControls.compName.errors?.maxlength && formControls.compName.errors?.minlength"
                                 class="error-msg">Company Name cannot
                                 be less than 2 characters</span>
                         </div>
@@ -218,10 +208,10 @@
                             class="form-control {{ formControls.catchPhrase.touched && formControls.catchPhrase.invalid ? 'error-border' : ''}}">
                         <div *ngIf="submitted || formControls.catchPhrase.touched && formControls.catchPhrase.invalid"
                             class="error">
-                            <span *ngIf="formControls.catchPhrase.errors.required" class="error-msg">This field
+                            <span *ngIf="formControls.catchPhrase.errors?.required" class="error-msg">This field
                                 cannot be blank</span>
-                            <span *ngIf="formControls.catchPhrase.errors.pattern" class="error-msg">Invalid field</span>
-                            <span *ngIf="formControls.catchPhrase.errors.maxlength" class="error-msg">Catch Phrase
+                            <span *ngIf="formControls.catchPhrase.errors?.pattern" class="error-msg">Invalid field</span>
+                            <span *ngIf="formControls.catchPhrase.errors?.maxlength" class="error-msg">Catch Phrase
                                 cannot
                                 be greater than 150 characters</span>
                         </div>
@@ -231,10 +221,10 @@
                         <input type="text" maxlength="50" formControlName="bs" name="bs" id="bs" required
                             class="form-control {{formControls.bs.touched && formControls.bs.invalid ? 'error-border' : ''}}">
                         <div *ngIf="submitted || formControls.bs.touched && formControls.bs.invalid" class="error">
-                            <span *ngIf="formControls.bs.errors.required" class="error-msg">This field
+                            <span *ngIf="formControls.bs.errors?.required" class="error-msg">This field
                                 cannot be blank</span>
-                            <span *ngIf="formControls.bs.errors.pattern" class="error-msg">Invalid field</span>
-                            <span *ngIf="formControls.bs.errors.maxlength" class="error-msg">bscannot
+                            <span *ngIf="formControls.bs.errors?.pattern" class="error-msg">Invalid field</span>
+                            <span *ngIf="formControls.bs.errors?.maxlength" class="error-msg">bscannot
                                 be greater than 150 characters</span>
                         </div>
                     </div>

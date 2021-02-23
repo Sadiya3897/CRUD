@@ -4,7 +4,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { throwError, empty } from 'rxjs';
 import * as globals from '../globals';
-
+import {DataSource} from '@angular/cdk/collections';
+import { MatTableDataSource } from '@angular/material/table';
+export interface TodoElement {
+  id: number;
+  title: string;
+  userId: number;
+  completed: string;
+}
 
 @Component({
   selector: 'app-todolist',
@@ -12,7 +19,27 @@ import * as globals from '../globals';
   styleUrls: ['./todolist.component.css']
 })
 export class TodolistComponent implements OnInit {
+  dataSource: MatTableDataSource<TodoElement> ;
   public todoList: any = [];
+  displayedColumns = [];
+  columnNames = [{
+    id: 'id',
+    value: 'S.No',
+
+  },
+  {
+    id: 'userId',
+    value: 'USER ID',
+  },
+  {
+    id: 'title',
+    value: 'Title',
+  },
+  {
+    id: 'completed',
+    value: 'Completed',
+  }];
+
   public todoForm: FormGroup;
   public formControls: any;
   public overlayFlag: any = false;
@@ -29,6 +56,9 @@ export class TodolistComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
+    this.displayedColumns = this.columnNames.map(x => x.id);
+    this.displayedColumns.push("edit");
+    this.displayedColumns.push("delete");
     this.todo();
     this.getDataFromService.getUsers().then((data) => {
       data.forEach(element => {
@@ -40,6 +70,7 @@ export class TodolistComponent implements OnInit {
     this.getDataFromService.getTodoData().then((data) => {
       if (data) {
         this.todoList = data;
+        this.dataSource = new MatTableDataSource<TodoElement>(this.todoList);
       }
     }).catch(error => {
       return throwError(error);
@@ -84,6 +115,7 @@ export class TodolistComponent implements OnInit {
         this.getDataFromService.addTodo(request).then((data) => {
           if (data) {
             this.todoList.push(data);
+            this.dataSource = new MatTableDataSource<TodoElement>(this.todoList);
           }
         }).catch(error => {
           return throwError(error);
@@ -100,6 +132,7 @@ export class TodolistComponent implements OnInit {
                 element.completed = data.completed;
               }
             });
+            this.dataSource = new MatTableDataSource<TodoElement>(this.todoList);
           }
         }).catch(error => {
           return throwError(error);
@@ -113,6 +146,7 @@ export class TodolistComponent implements OnInit {
     this.getDataFromService.deleteTodo(todo.id)
       .then(response => {
         this.todoList = this.todoList.filter(item => item.id !== todo.id);
+        this.dataSource = new MatTableDataSource<TodoElement>(this.todoList);
       });
   }
   public cancel() {

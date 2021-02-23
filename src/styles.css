@@ -45,11 +45,11 @@
     color: #555;
     line-height: 38px;
 }
-table, th, td {
+/* table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
     background-color: cadetblue;
-}
+} */
   button {
     background-color: burlywood;
     border: none;
@@ -81,31 +81,40 @@ table, th, td {
 	border-color: #7cb6d8 !important;
 }
 .ng-invalid.form-control{ border-bottom: 1px solid #b3b7bd;}
-
-/* .wrap-input-position{
-    .ng-valid, .ng-invalid{
-        .desktop-datepicker{
-            background-position: -73px 0;
-            top: -6px !important;
-        }
-    }
-    .ng-invalid{
-        .form-control{
-            border-bottom: 1px solid #b3b7bd;
-        }
-        .desktop-datepicker{
-            background-position: -34px 0;
-            top: -6px !important;
-        } 
-        .form-control, .flatpickr-input{
-           font-weight: 300;
-         }
-    }
-    .ng-valid, .ng-invalid{
-        &::before{
-            top: -3px;
-            display:none;
-        }
-    }
-   .ng-invalid.ng-dirty .form-control{   border-color: #d15954 !important;}
-  } */
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+table{
+    width: 100%;
+   }
+   .mat-column-title {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 28% !important;
+    width: 28% !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+  .mat-column-id {
+    width: 10% !important;
+    max-width: 10%;
+  }  
+  .mat-column-userId {
+    width: 10% !important;
+    max-width: 10%;
+  }
+  .mat-column-completed {
+    width: 12% !important;
+    max-width: 12%;
+    padding-left: 30px;
+  }
+  .mat-column-edit {
+    width: 12% !important;
+    max-width: 12%;
+    padding-left: 30px;
+  }       
