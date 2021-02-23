@@ -3,6 +3,7 @@ import { GetDataService } from '../get-data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { throwError, empty } from 'rxjs';
+import * as globals from '../globals';
 
 @Component({
   selector: 'app-home',
@@ -15,6 +16,7 @@ export class HomeComponent implements OnInit {
   public formControls: any;
   public overlayFlag: any = false;
   public header: any;
+  public submitted : any = false;
 
   constructor(
     private getDataFromService: GetDataService,
@@ -33,20 +35,20 @@ export class HomeComponent implements OnInit {
   */
   private initializeForm() {
     this.userform = this.fb.group({
-      fullName: ['', [Validators.required]],
-      Username: ['', [Validators.required]],
-      email: ['', [Validators.required]],
-      street: ['', [Validators.required]],
-      suite: ['', [Validators.required]],
+      fullName: ['', [Validators.required, Validators.maxLength(150), Validators.minLength(2), Validators.pattern(globals.REGX_SINGLE_SPACE_STRING)]],
+      Username: ['', [Validators.required, Validators.maxLength(50), Validators.minLength(2), Validators.pattern(globals.REGX_ALPHANUM_NOSPACE)]],
+      email: ['', [Validators.required, Validators.maxLength(50), Validators.pattern(globals.REGX_EMAIL)]],
+      street: ['', [Validators.required, Validators.maxLength(50), Validators.pattern(globals.REGX_ADDRESS)]],
+      suite: ['', [Validators.required, Validators.maxLength(50), Validators.pattern(globals.REGX_ADDRESS)]],
       city: ['', [Validators.required]],
       zipcode: ['', [Validators.required]],
       lat: ['', [Validators.required]],
       lng: ['', [Validators.required]],
       mobile: ['', [Validators.required]],
-      Website: ['', [Validators.required]],
-      compName: ['', [Validators.required]],
-      catchPhrase: ['', [Validators.required]],
-      bs: ['', [Validators.required]]
+      Website: ['', [Validators.required, Validators.maxLength(150), Validators.pattern(globals.REGX_FREE_TEXT)]],
+      compName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(70), Validators.pattern(globals.REGX_FREE_TEXT)]],
+      catchPhrase: ['', [Validators.required, Validators.maxLength(150), Validators.pattern(globals.REGX_FREE_TEXT)]],
+      bs: ['', [Validators.required, Validators.maxLength(150), Validators.pattern(globals.REGX_FREE_TEXT)]]
     });
     this.formControls = this.userform.controls;
   }
@@ -92,6 +94,7 @@ export class HomeComponent implements OnInit {
   }
   public save(body) {
     if (this.userform.valid) {
+      this.submitted = false;
       this.overlayFlag = false;
       let request = {
         name: body.fullName.value,
@@ -166,6 +169,8 @@ export class HomeComponent implements OnInit {
           return throwError(error);
         });
       }
+    } else {
+      this.submitted = true;
     }
   }
   public delete(users) {
@@ -179,13 +184,14 @@ export class HomeComponent implements OnInit {
     this.overlayFlag = false;
   }
   public create() {
+    Object.keys(this.formControls).forEach(item => {
+      this.formControls[item].setValue(null);
+      this.formControls[item].clearValidators();
+      this.formControls[item].updateValueAndValidity();
+    });
     this.initializeForm();
     this.header = true;
     localStorage.clear();
     this.overlayFlag = true;
-    Object.keys(this.formControls).forEach(item => {
-      this.formControls[item].clearValidators();
-      this.formControls[item].updateValueAndValidity();
-    });
   }
 }

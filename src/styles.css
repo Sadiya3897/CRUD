@@ -33,7 +33,6 @@
 .redirection-popup .redirection-content{
     background: #fff;
     padding: 14px 15px 16px;
-    border-radius: 0 0 6px 6px;
 }
 .redirection-popup .redirection-content p{
     font-size: 14px;
@@ -41,10 +40,10 @@
 }
 .redirection-popup .redirection-content label {
     padding-left: 22px;
-    font-size: 12px;
+    font-size: 18px;
     top: -15px;
     color: #555;
-    line-height: 15px;
+    line-height: 38px;
 }
 table, th, td {
     border: 1px solid black;
@@ -70,3 +69,43 @@ table, th, td {
     padding-top: 10px;
     display: block;
 }  
+.form-row{
+    display: flex;
+    /* inline-size: min-content; */
+    inline-size: max-content;
+}
+.error-border, .ng-touched, .wrap-input-position .ng-touched .form-control{
+	border-color: #d15954 !important;
+}
+.ng-touched.ng-valid, .wrap-input-position .ng-touched.ng-valid .form-control{
+	border-color: #7cb6d8 !important;
+}
+.ng-invalid.form-control{ border-bottom: 1px solid #b3b7bd;}
+
+/* .wrap-input-position{
+    .ng-valid, .ng-invalid{
+        .desktop-datepicker{
+            background-position: -73px 0;
+            top: -6px !important;
+        }
+    }
+    .ng-invalid{
+        .form-control{
+            border-bottom: 1px solid #b3b7bd;
+        }
+        .desktop-datepicker{
+            background-position: -34px 0;
+            top: -6px !important;
+        } 
+        .form-control, .flatpickr-input{
+           font-weight: 300;
+         }
+    }
+    .ng-valid, .ng-invalid{
+        &::before{
+            top: -3px;
+            display:none;
+        }
+    }
+   .ng-invalid.ng-dirty .form-control{   border-color: #d15954 !important;}
+  } */

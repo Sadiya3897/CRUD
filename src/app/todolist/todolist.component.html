@@ -29,33 +29,51 @@
         <h3 *ngIf="header">Create TODO</h3>
         <div class="redirection-content">
             <form [formGroup]="todoForm" (ngSubmit)="$event.preventDefault()">
-                <div class="form-group CustomValidators col-md-6">
-                    <label class="label-text">Title</label>
-                    <input appSpecialCharacter type="text" formControlName="title" id="title" name="title"
-                        maxlength="254" required
-                        class="form-control {{formControls.title.touched && formControls.title.invalid ? 'error-border' : ''}}">
-                    <div *ngIf="formControls.title.touched && formControls.title.invalid" class="error">
-                        <span *ngIf="formControls.title.errors.required" class="error-msg">This field cannot be
-                            blank</span>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label class="label-text">Title</label>
+                        <input appSpecialCharacter type="text" formControlName="title" id="title" name="title"
+                            maxlength="254" required
+                            class="form-control {{formControls.title.touched && formControls.title.invalid ? 'error-border' : ''}}">
+                        <div *ngIf="submitted || formControls.title.dirty && formControls.title.invalid" class="error">
+                            <span *ngIf="formControls.title.errors?.required" class="error-msg">This field cannot be
+                                blank</span>
+                            <span *ngIf="formControls.title.errors?.pattern && !formControls.title.errors?.required"
+                                [hidden]="formControls.title.errors?.minlength || formControls.title.errors?.maxlength"
+                                class="error-msg">Doesn’t look like a title</span>
+                            <span *ngIf="formControls.title.errors?.minlength" class="error-msg">Please enter at least
+                                2 characters</span>
+                            <span *ngIf="formControls.title.errors?.maxlength" class="error-msg">Title cannot be
+                                greater than
+                                300 characters</span>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group CustomValidators col-md-6">
-                    <label class="label-text">Completed</label>
-                    <input type="text" formControlName="completed" name="completed" id="completed" required
-                        class="form-control {{formControls.completed.touched && formControls.completed.invalid ? 'error-border' : ''}}">
-                    <div *ngIf="formControls.completed.touched && formControls.completed.invalid" class="error">
-                        <span *ngIf="formControls.completed.errors.required" class="error-msg">This field
-                            cannot be blank</span>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label class="label-text">Completed</label>
+                        <select formControlName="completed">
+                            <option value="true">True</option>
+                            <option value="false">False</option>
+                        </select>
+                        <div *ngIf="submitted || formControls.completed.touched && formControls.completed.invalid"
+                            class="error">
+                            <span *ngIf="formControls.completed.errors?.required" class="error-msg">This field
+                                cannot be blank</span>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group CustomValidators col-md-6">
-                    <label class="label-text">User Id</label>
-                    <select formControlName="userId">
-                        <option *ngFor="let id of userId" [value]="id">{{id}}</option>
-                    </select>
-                    <div *ngIf="formControls.userId.touched && formControls.userId.invalid" class="error">
-                        <span *ngIf="formControls.userId.errors.required" class="error-msg">This field
-                            cannot be blank</span>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label class="label-text">User Id</label>
+                        <select formControlName="userId">
+                            <option *ngFor="let id of userId" [value]="id">{{id}}</option>
+                        </select>
+                        <div *ngIf="submitted || formControls.userId.touched && formControls.userId.invalid"
+                            class="error">
+                            <span *ngIf="formControls.userId.errors?.required" class="error-msg">This field
+                                cannot be blank</span>
+                        </div>
                     </div>
                 </div>
                 <button (click)="save(formControls)" class="default-btn">SAVE</button>

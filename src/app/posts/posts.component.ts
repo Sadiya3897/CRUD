@@ -3,6 +3,7 @@ import { GetDataService } from '../get-data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { throwError } from 'rxjs';
+import * as globals from '../globals';
 
 @Component({
   selector: 'app-posts',
@@ -16,6 +17,7 @@ export class PostsComponent implements OnInit {
   public overlayFlag: any = false;
   public header: any;
   public userId: any = [];
+  public submitted : any = false;
 
   constructor(
     private getDataFromService: GetDataService,
@@ -49,8 +51,8 @@ export class PostsComponent implements OnInit {
   */
   private initializeForm() {
     this.postsForm = this.fb.group({
-      title: ['', [Validators.required]],
-      body: ['', [Validators.required]],
+      title: ['', [Validators.required, Validators.maxLength(300), Validators.minLength(2), Validators.pattern(globals.REGX_FREE_TEXT)]],
+      body: ['', [Validators.required, Validators.maxLength(500), Validators.minLength(2)]],
       userId: ['', [Validators.required]]
     });
     this.formControls = this.postsForm.controls;
@@ -69,6 +71,7 @@ export class PostsComponent implements OnInit {
   }
   public save(body) {
     if (this.postsForm.valid) {
+      this.submitted = false;
       this.overlayFlag = false;
       let request = {
         title: body.title.value,
@@ -102,25 +105,28 @@ export class PostsComponent implements OnInit {
         });
       }
     }
+    else {
+      this.submitted = true;
+    }
   }
-  public delete(posts) {
-    this.getDataFromService.deletePosts(posts.id)
+  public delete(post) {
+    this.getDataFromService.deletePosts(post.id)
       .then(response => {
-        this.posts = this.posts.filter(item => item.id !== posts.id);
+        this.posts = this.posts.filter(item => item.id !== post.id);
       });
   }
   public cancel() {
     this.overlayFlag = false;
   }
   public create() {
-    this.initializeForm();
-    this.header = true;
-    localStorage.clear();
-    this.overlayFlag = true;
     Object.keys(this.formControls).forEach(item => {
       this.formControls[item].clearValidators();
       this.formControls[item].updateValueAndValidity();
     });
+    this.initializeForm();
+    this.header = true;
+    localStorage.clear();
+    this.overlayFlag = true;
   }
 
 }

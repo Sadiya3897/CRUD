@@ -3,6 +3,7 @@ import { GetDataService } from '../get-data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { throwError, empty } from 'rxjs';
+import * as globals from '../globals';
 
 
 @Component({
@@ -17,6 +18,7 @@ export class TodolistComponent implements OnInit {
   public overlayFlag: any = false;
   public header: any;
   public userId: any = [];
+  public submitted : any = false;
 
   constructor(
     private getDataFromService: GetDataService,
@@ -50,7 +52,7 @@ export class TodolistComponent implements OnInit {
   */
   private initializeForm() {
     this.todoForm = this.fb.group({
-      title: ['', [Validators.required]],
+      title: ['',  [Validators.required, Validators.maxLength(300), Validators.minLength(2), Validators.pattern(globals.REGX_FREE_TEXT)]],
       completed: ['', [Validators.required]],
       userId: ['', [Validators.required]]
     });
@@ -70,6 +72,7 @@ export class TodolistComponent implements OnInit {
   }
   public save(body) {
     if (this.todoForm.valid) {
+      this.submitted = false;
       this.overlayFlag = false;
       let request = {
         title: body.title.value,
@@ -102,6 +105,8 @@ export class TodolistComponent implements OnInit {
           return throwError(error);
         });
       }
+    }  else {
+      this.submitted = true;
     }
   }
   public delete(todo) {
@@ -114,14 +119,14 @@ export class TodolistComponent implements OnInit {
     this.overlayFlag = false;
   }
   public create() {
-    this.initializeForm();
-    this.header = true;
-    localStorage.clear();
-    this.overlayFlag = true;
     Object.keys(this.formControls).forEach(item => {
       this.formControls[item].clearValidators();
       this.formControls[item].updateValueAndValidity();
     });
+    this.initializeForm();
+    this.header = true;
+    localStorage.clear();
+    this.overlayFlag = true;
   }
 
 }
