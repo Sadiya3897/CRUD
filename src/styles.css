@@ -101,12 +101,12 @@ table{
     hyphens: auto;
   }
   .mat-column-id {
-    width: 10% !important;
-    max-width: 10%;
+    width: 7% !important;
+    max-width: 7%;
   }  
   .mat-column-userId {
-    width: 10% !important;
-    max-width: 10%;
+    width: 7% !important;
+    max-width: 7%;
   }
   .mat-column-completed {
     width: 12% !important;
@@ -117,4 +117,18 @@ table{
     width: 12% !important;
     max-width: 12%;
     padding-left: 30px;
-  }       
+  } 
+  .mat-column-address {
+    word-break: break-word;
+    padding-left: 22px;
+  } 
+  .mat-column-email {
+    word-break: break-word;
+  }
+  .mat-column-phone {
+    word-break: break-word;
+    padding-left: 24px;
+  } 
+  .mat-column-website {
+    word-break: break-word;
+  }          
